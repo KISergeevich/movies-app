@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import ApiMovieDB from '../../services/api-movie-db'
 import './app.css'
 import Header from '../header/header'
-import ListFilm from '../films-list/films-list'
+import ListFilm from '../films-list/movie-list'
 
 export default class App extends Component {
   constructor() {
@@ -17,7 +17,7 @@ export default class App extends Component {
     this.api = new ApiMovieDB()
   }
 
-  onSearch(search) {
+  async onSearch(search) {
     this.setState((state) => {
       return {
         ...state,
@@ -26,7 +26,7 @@ export default class App extends Component {
       }
     })
     const { page } = this.state
-    const response = this.api.search(search, page)
+    const response = await this.api.search(search, page)
     const { movies, total } = response
     this.setState((state) => {
       return {
