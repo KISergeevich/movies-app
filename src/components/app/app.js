@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Pagination } from 'antd'
 
 import ApiMovieDB from '../../services/api-movie-db'
 import './app.css'
@@ -37,8 +38,7 @@ export default class App extends Component {
     })
   }
 
-  // eslint-disable-next-line react/no-unused-class-component-methods
-  onPage(page) {
+  async onPage(page) {
     this.setState((state) => {
       return {
         ...state,
@@ -46,7 +46,7 @@ export default class App extends Component {
       }
     })
     const { search } = this.state
-    const response = this.api.search(search, page)
+    const response = await this.api.search(search, page)
     const { movies, total } = response
     this.setState((state) => {
       return {
@@ -58,12 +58,21 @@ export default class App extends Component {
   }
 
   render() {
-    const { movies } = this.state
+    const { movies, total, page } = this.state
     return (
-      <section className="">
+      <div className="">
         <Header onSearch={(search) => this.onSearch(search)} />
         <ListFilm movies={movies} />
-      </section>
+        <Pagination
+          defaultCurrent={1}
+          total={total}
+          onChange={(p) => this.onPage(p)}
+          hideOnSinglePage
+          pageSize={20}
+          current={page}
+          showSizeChanger={false}
+        />
+      </div>
     )
   }
 }
