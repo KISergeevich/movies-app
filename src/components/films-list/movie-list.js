@@ -1,5 +1,6 @@
 import React from 'react'
 
+import './movie-list.css'
 import Movie from '../film-item/movie'
 
 export default function MovieList({ movies }) {

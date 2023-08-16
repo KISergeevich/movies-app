@@ -60,18 +60,20 @@ export default class App extends Component {
   render() {
     const { movies, total, page } = this.state
     return (
-      <div className="">
+      <div className="movieListView">
         <Header onSearch={(search) => this.onSearch(search)} />
         <ListFilm movies={movies} />
-        <Pagination
-          defaultCurrent={1}
-          total={total}
-          onChange={(p) => this.onPage(p)}
-          hideOnSinglePage
-          pageSize={20}
-          current={page}
-          showSizeChanger={false}
-        />
+        <div className="pagination">
+          <Pagination
+            defaultCurrent={1}
+            total={total}
+            onChange={(p) => this.onPage(p)}
+            hideOnSinglePage
+            pageSize={20}
+            current={page}
+            showSizeChanger={false}
+          />
+        </div>
       </div>
     )
   }
