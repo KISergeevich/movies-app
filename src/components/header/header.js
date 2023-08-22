@@ -1,6 +1,7 @@
 import { Tabs } from 'antd'
 import { Component } from 'react'
 import './header.css'
+import PropTypes from 'prop-types'
 
 export default class Header extends Component {
   items = [
@@ -33,8 +34,15 @@ export default class Header extends Component {
   render() {
     return (
       <header>
-        <Tabs defaultActiveKey="1" centered items={this.items} />
+        <Tabs className="header-tabs" defaultActiveKey="1" centered items={this.items} />
       </header>
     )
   }
+}
+
+Header.propTypes = {
+  onSearch: PropTypes.func,
+}
+Header.defaultProps = {
+  onSearch: () => {},
 }

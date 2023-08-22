@@ -1,0 +1,133 @@
+.movie-container {
+    display: flex;
+    width: 100%;
+    box-shadow: 0px 4px 12px 0px #00000026;
+    align-items: stretch;
+}
+@media (min-width: 776px) { 
+    .movie-container {
+        width: 451px;
+        height: 279px;
+    }
+}
+.movie-сard__img--desktop {
+    display: none;
+}
+@media (min-width: 776px) { 
+    .movie-сard__img--desktop {
+        display: block;
+        width: 183px;
+        height: 279px;
+    }
+}
+.movie-сard__img--mobile {
+    max-width: 60px;
+    max-height: 91px;
+}
+@media (min-width: 776px) { 
+    .movie-сard__img--mobile {
+        display: none;
+    }
+}
+.movie-сard {
+    box-sizing: border-box;
+    height: 245px;
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+@media (min-width: 776px) { 
+    .movie-сard {
+        height: 279px;
+        width: 268px;
+    }
+}
+.movie-сard__header {
+    display: flex;
+    justify-content: space-between;
+}
+.movie-сard__information {
+    flex-grow: 1;
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+@media (min-width: 776px) { 
+    .movie-сard__information {
+        margin-left: 0;
+    }
+}
+.movie-сard__title {
+    font-family: "Inter UI";
+    font-size: 20px;
+    line-height: 28px;
+    letter-spacing: 0em;
+    text-align: left;
+}
+
+.movie-сard__rate {
+    width: 30px;
+    height: 30px;
+    border: 2px solid yellow;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Inter UI";
+    font-size: 12px;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+    flex-shrink: 0;
+}
+.movie-сard__date {
+    font-family: "Inter UI";
+    font-size: 12px;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: #827E7E;
+}
+.movie-сard__genres {
+    display: flex;
+    justify-content: left;
+    gap: 5px;
+}
+.movie-сard__genre {
+    box-sizing: border-box;
+    font-family: "Inter UI";
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: #000000A6;
+    height: 20px;
+    border: 1px solid #D9D9D9;
+    border-radius: 2px;
+    background-color: #FAFAFA;
+    padding: 3px;
+}
+.movie-сard__overview {
+    color: #000;
+    font-family: "Inter UI";
+    font-size: 12px;
+    line-height: 22px;
+    letter-spacing: 0px;
+    text-align: left;
+    overflow-y: hidden;
+    margin-top: 10px;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+}
+.movie-сard__rating {
+    align-self: flex-end;
+}
+:where(.css-dev-only-do-not-override-byeoj0).ant-rate {
+    font-size: 14px;
+}

@@ -4,6 +4,14 @@ input {
 input:active, input:hover, input:focus {
     outline: 2px solid #1890FF;
 }
+header {
+    margin-bottom: 10px;
+}
+.header__box {
+    display: flex;
+    max-width: 922px;
+    margin: 0 auto;
+}
 .header__search {
     box-sizing: border-box;
     margin: 0;
@@ -19,6 +27,7 @@ input:active, input:hover, input:focus {
     background-clip: padding-box;
     border: 1px solid #bdbdbd;
     border-radius: 0.25rem;
+    align-self: center;
 }
 .ant-tabs-nav::before {
     margin-left: auto;
