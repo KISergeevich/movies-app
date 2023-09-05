@@ -15,8 +15,10 @@ export default function MovieList({ movies, status }) {
       return <Spin size="large" />
     case 'success':
       return <ul className="movie-list">{elementMovies}</ul>
+    case 'empty':
+      return <Alert message="Sorry, we can't find this film" type="info" />
     case 'failed':
-      return <Alert message="Sorry, we can't find films :(" type="error" />
+      return <Alert message="Sorry, something happend with server :(" type="error" />
     case 'noInternet':
       return <Alert message="Sorry, check your network" type="error" />
     default:
@@ -30,12 +32,14 @@ MovieList.propTypes = {
       title: PropTypes.string,
       poster_path: PropTypes.string,
       overview: PropTypes.string,
-      release_date: PropTypes.instanceOf(Date),
+      release_date: PropTypes.string,
       vote_average: PropTypes.number,
     })
   ),
+  status: PropTypes.string,
 }
 
 MovieList.defaultProps = {
   movies: [],
+  status: 'none',
 }

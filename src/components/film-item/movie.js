@@ -65,7 +65,7 @@ Movie.propTypes = {
     title: PropTypes.string,
     poster_path: PropTypes.string,
     overview: PropTypes.string,
-    release_date: PropTypes.instanceOf(Date),
+    release_date: PropTypes.string,
     vote_average: PropTypes.number,
   }),
 }

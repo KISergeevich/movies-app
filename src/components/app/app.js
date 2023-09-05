@@ -20,7 +20,7 @@ export default class App extends Component {
   }
 
   async onSearch(search) {
-    this.setState((state) => {
+    await this.setState((state) => {
       return {
         ...state,
         search,
@@ -28,36 +28,45 @@ export default class App extends Component {
         status: 'loading',
       }
     })
-    const { page } = this.state
-    const response = await this.api.search(search, page)
-    const { movies, total, status } = response
-    this.setState((state) => {
-      return {
-        ...state,
-        movies,
-        total,
-        status,
-      }
-    })
+    this.fetch()
   }
 
   async onPage(page) {
-    this.setState((state) => {
+    await this.setState((state) => {
       return {
         ...state,
         page,
+        status: 'loading',
       }
     })
-    const { search } = this.state
-    const response = await this.api.search(search, page)
-    const { movies, total } = response
-    this.setState((state) => {
-      return {
-        ...state,
-        movies,
-        total,
-      }
-    })
+    this.fecth()
+  }
+
+  async fetch() {
+    const { search, page } = this.state
+    if (search !== '') {
+      const response = await this.api.search(search, page)
+      const { movies, total, status } = response
+      this.setState((state) => {
+        return {
+          ...state,
+          movies,
+          total,
+          status,
+        }
+      })
+    } else {
+      this.setState((state) => {
+        return {
+          ...state,
+          total: 0,
+          movies: [],
+          search,
+          page: 1,
+          status: 'none',
+        }
+      })
+    }
   }
 
   render() {

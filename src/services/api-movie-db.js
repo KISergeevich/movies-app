@@ -36,7 +36,7 @@ export default class ApiMovieDB {
     return {
       movies: results,
       total: total_results,
-      status: 'success',
+      status: results.length !== 0 ? 'success' : 'empty',
     }
   }
 }
