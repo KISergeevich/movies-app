@@ -11,18 +11,32 @@ export default class ApiMovieDB {
         Authorization: `Bearer ${this.auth}`,
       },
     }
-    const response = await fetch(
-      `https://api.themoviedb.org/3/search/movie?query=${search}&include_adult=false&language=en-US&page=${page}`,
-      options
-    )
+    let response
+    try {
+      response = await fetch(
+        `https://api.themoviedb.org/3/search/movie?query=${search}&include_adult=false&language=en-US&page=${page}`,
+        options
+      )
+    } catch {
+      return {
+        movies: [],
+        total: 0,
+        status: 'noInternet',
+      }
+    }
     if (!response.ok) {
-      throw new Error(`Could not fetch, received ${response.status}`)
+      return {
+        movies: [],
+        total: 0,
+        status: 'failed',
+      }
     }
     const json = await response.json()
     const { results, total_results } = json
     return {
       movies: results,
       total: total_results,
+      status: 'success',
     }
   }
 }

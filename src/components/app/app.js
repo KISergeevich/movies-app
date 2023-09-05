@@ -14,6 +14,7 @@ export default class App extends Component {
       movies: [],
       total: 0,
       search: '',
+      status: 'none',
     }
     this.api = new ApiMovieDB()
   }
@@ -24,16 +25,18 @@ export default class App extends Component {
         ...state,
         search,
         page: 1,
+        status: 'loading',
       }
     })
     const { page } = this.state
     const response = await this.api.search(search, page)
-    const { movies, total } = response
+    const { movies, total, status } = response
     this.setState((state) => {
       return {
         ...state,
         movies,
         total,
+        status,
       }
     })
   }
@@ -58,11 +61,11 @@ export default class App extends Component {
   }
 
   render() {
-    const { movies, total, page } = this.state
+    const { movies, total, page, status } = this.state
     return (
       <div className="movieListView">
         <Header onSearch={(search) => this.onSearch(search)} />
-        <ListFilm movies={movies} />
+        <ListFilm movies={movies} status={status} />
         <div className="pagination">
           <Pagination
             defaultCurrent={1}
