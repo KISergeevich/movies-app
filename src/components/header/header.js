@@ -2,6 +2,7 @@ import { Tabs } from 'antd'
 import { Component } from 'react'
 import './header.css'
 import PropTypes from 'prop-types'
+import debounce from 'lodash.debounce'
 
 export default class Header extends Component {
   items = [
@@ -26,9 +27,13 @@ export default class Header extends Component {
     },
   ]
 
+  // eslint-disable-next-line react/destructuring-assignment
+  debouncedSearch = debounce((search) => this.props.onSearch(search), 1000, {
+    maxWait: 500,
+  })
+
   searchChanged(event) {
-    const { onSearch } = this.props
-    onSearch(event.target.value)
+    this.debouncedSearch(event.target.value)
   }
 
   render() {

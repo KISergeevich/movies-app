@@ -27,7 +27,8 @@ export default class App extends Component {
         status: 'loading',
       }
     })
-    this.fetch()
+    const { page } = this.state
+    this.fetch(search, page)
   }
 
   async onPage(page) {
@@ -38,11 +39,11 @@ export default class App extends Component {
         status: 'loading',
       }
     })
-    this.fetch()
+    const { search } = this.state
+    this.fetch(search, page)
   }
 
-  async fetch() {
-    const { search, page } = this.state
+  async fetch(search, page) {
     if (search !== '') {
       const response = await this.api.search(search, page)
       const { movies, total, status } = response
