@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Pagination } from 'antd'
 
 import ApiMovieDB from '../../services/api-movie-db'
 import './app.css'
 import Header from '../header/header'
-import ListFilm from '../films-list/movie-list'
+import ListFilm from '../films-list/films-list'
 
 export default class App extends Component {
   constructor() {
@@ -39,7 +38,7 @@ export default class App extends Component {
         status: 'loading',
       }
     })
-    this.fecth()
+    this.fetch()
   }
 
   async fetch() {
@@ -74,18 +73,7 @@ export default class App extends Component {
     return (
       <div className="movieListView">
         <Header onSearch={(search) => this.onSearch(search)} />
-        <ListFilm movies={movies} status={status} />
-        <div className="pagination">
-          <Pagination
-            defaultCurrent={1}
-            total={total}
-            onChange={(p) => this.onPage(p)}
-            hideOnSinglePage
-            pageSize={20}
-            current={page}
-            showSizeChanger={false}
-          />
-        </div>
+        <ListFilm movies={movies} onPage={(p) => this.onPage(p)} status={status} total={total} page={page} />
       </div>
     )
   }

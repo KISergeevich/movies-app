@@ -1,20 +1,34 @@
 /* eslint-disable indent */
 import PropTypes from 'prop-types'
 import React from 'react'
-import { Spin, Alert } from 'antd'
+import { Spin, Alert, Pagination } from 'antd'
 
-import './movie-list.css'
+import './films-list.css'
 import Movie from '../film-item/movie'
 
-export default function MovieList({ movies, status }) {
+export default function MovieList({ movies, status, page, total, onPage }) {
   const elementMovies = movies.map((movie) => {
     return <Movie movie={movie} key={movie.id} />
   })
   switch (status) {
     case 'loading':
-      return <Spin size="large" />
+      return <Spin className="spin" size="large" />
     case 'success':
-      return <ul className="movie-list">{elementMovies}</ul>
+      return (
+        <div>
+          <ul className="movie-list">{elementMovies}</ul>
+          <Pagination
+            className="pagination"
+            defaultCurrent={1}
+            total={total}
+            onChange={(p) => onPage(p)}
+            hideOnSinglePage
+            pageSize={20}
+            current={page}
+            showSizeChanger={false}
+          />
+        </div>
+      )
     case 'empty':
       return <Alert message="Sorry, we can't find this film" type="info" />
     case 'failed':
@@ -37,9 +51,15 @@ MovieList.propTypes = {
     })
   ),
   status: PropTypes.string,
+  page: PropTypes.number,
+  total: PropTypes.number,
+  onPage: PropTypes.func,
 }
 
 MovieList.defaultProps = {
   movies: [],
   status: 'none',
+  page: 1,
+  total: 0,
+  onPage: () => {},
 }

@@ -21,10 +21,6 @@ body {
     box-sizing: inherit;
 }
 
-.ant-pagination {
-    display: flex;
-    justify-content: center;
-} 
 .movieListView {
     box-sizing: border-box;
     min-width: 388px;
@@ -33,7 +29,4 @@ body {
     align-items: stretch;
     justify-self: start;
     background-color: white;
-}
-.pagination {
-    margin-top: 20px;
 }
