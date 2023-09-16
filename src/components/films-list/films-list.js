@@ -3,12 +3,19 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { Spin, Alert, Pagination } from 'antd'
 
+import { GenresConsumer } from '../../services/genres-context'
 import './films-list.css'
 import Movie from '../film-item/movie'
 
 export default function MovieList({ movies, status, page, total, onPage }) {
   const elementMovies = movies.map((movie) => {
-    return <Movie movie={movie} key={movie.id} />
+    return (
+      <GenresConsumer key={movie.id}>
+        {(genres) => {
+          return <Movie movie={movie} key={movie.id} genres={genres} />
+        }}
+      </GenresConsumer>
+    )
   })
   switch (status) {
     case 'loading':

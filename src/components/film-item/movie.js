@@ -21,8 +21,23 @@ function lengthText(str) {
   return newText.trimEnd().concat('...')
 }
 
-export default function Movie({ movie }) {
-  const { title, poster_path: posterPath, overview, release_date: dateRelease, vote_average: voteAverage } = movie
+export default function Movie({ movie, genres }) {
+  const {
+    title,
+    poster_path: posterPath,
+    overview,
+    release_date: dateRelease,
+    vote_average: voteAverage,
+    genre_ids: genresIDs,
+  } = movie
+  const checkedGenres = genresIDs.map((id) => {
+    const foundGenre = genres.find((genre) => genre.id === id)
+    return foundGenre === undefined ? null : (
+      <div key={foundGenre.id} className="movie-сard__genre">
+        {foundGenre.name}
+      </div>
+    )
+  })
   return (
     <li className="movie-container">
       <img
@@ -46,10 +61,7 @@ export default function Movie({ movie }) {
                 ? format(new Date(dateRelease), 'MMMM dd, yyyy')
                 : 'Date is unknown'}
             </div>
-            <div className="movie-сard__genres">
-              <div className="movie-сard__genre">Action</div>
-              <div className="movie-сard__genre">Drama</div>
-            </div>
+            <div className="movie-сard__genres">{checkedGenres}</div>
           </div>
           <div className="movie-сard__rate">{voteAverage.toFixed(1)}</div>
         </div>

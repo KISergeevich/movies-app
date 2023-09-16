@@ -21,6 +21,20 @@ export default class ApiMovieDB {
     }
   }
 
+  async getGenres() {
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${this.auth}`,
+      },
+    }
+    const response = await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en', options)
+    const json = await response.json()
+    const { genres } = json
+    return genres
+  }
+
   async search(search, page) {
     const options = {
       method: 'GET',

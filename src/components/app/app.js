@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import { GenresProvider } from '../../services/genres-context'
 import ApiMovieDB from '../../services/api-movie-db'
 import './app.css'
 import Header from '../header/header'
@@ -14,12 +15,20 @@ export default class App extends Component {
       total: 0,
       search: '',
       status: 'none',
+      genres: [],
     }
     this.api = new ApiMovieDB()
   }
 
   async componentDidMount() {
     await this.api.createGuestSession()
+    const genres = await this.api.getGenres()
+    this.setState((state) => {
+      return {
+        ...state,
+        genres,
+      }
+    })
   }
 
   async onSearch(search) {
@@ -74,12 +83,14 @@ export default class App extends Component {
   }
 
   render() {
-    const { movies, total, page, status } = this.state
+    const { movies, total, page, status, genres } = this.state
     return (
-      <div className="movieListView">
-        <Header onSearch={(search) => this.onSearch(search)} />
-        <ListFilm movies={movies} onPage={(p) => this.onPage(p)} status={status} total={total} page={page} />
-      </div>
+      <GenresProvider value={genres}>
+        <div className="movieListView">
+          <Header onSearch={(search) => this.onSearch(search)} />
+          <ListFilm movies={movies} onPage={(p) => this.onPage(p)} status={status} total={total} page={page} />
+        </div>
+      </GenresProvider>
     )
   }
 }
