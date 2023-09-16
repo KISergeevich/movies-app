@@ -18,6 +18,10 @@ export default class App extends Component {
     this.api = new ApiMovieDB()
   }
 
+  async componentDidMount() {
+    await this.api.createGuestSession()
+  }
+
   async onSearch(search) {
     await this.setState((state) => {
       return {
