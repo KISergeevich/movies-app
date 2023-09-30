@@ -7,12 +7,19 @@ import { GenresConsumer } from '../../services/genres-context'
 import './films-list.css'
 import Movie from '../film-item/movie'
 
-export default function MovieList({ movies, status, page, total, onPage }) {
+export default function MovieList({ movies, status, page, total, onPage, onRating }) {
   const elementMovies = movies.map((movie) => {
     return (
       <GenresConsumer key={movie.id}>
         {(genres) => {
-          return <Movie movie={movie} key={movie.id} genres={genres} />
+          return (
+            <Movie
+              movie={movie}
+              key={movie.id}
+              genres={genres}
+              onRating={(movieId, rating) => onRating(movieId, rating)}
+            />
+          )
         }}
       </GenresConsumer>
     )

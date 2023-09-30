@@ -56,6 +56,10 @@ export default class App extends Component {
     this.fetch(search, page)
   }
 
+  onRating(movieId, rating) {
+    this.api.postRating(movieId, rating)
+  }
+
   async fetch(search, page) {
     if (search !== '') {
       const response = await this.api.search(search, page)
@@ -88,7 +92,14 @@ export default class App extends Component {
       <GenresProvider value={genres}>
         <div className="movieListView">
           <Header onSearch={(search) => this.onSearch(search)} />
-          <ListFilm movies={movies} onPage={(p) => this.onPage(p)} status={status} total={total} page={page} />
+          <ListFilm
+            movies={movies}
+            onPage={(p) => this.onPage(p)}
+            status={status}
+            total={total}
+            page={page}
+            onRating={(movieId, rating) => this.onRating(movieId, rating)}
+          />
         </div>
       </GenresProvider>
     )

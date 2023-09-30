@@ -22,8 +22,9 @@ function lengthText(str) {
   return newText.trimEnd().concat('...')
 }
 
-export default function Movie({ movie, genres }) {
+export default function Movie({ movie, genres, onRating }) {
   const {
+    id,
     title,
     poster_path: posterPath,
     overview,
@@ -31,8 +32,8 @@ export default function Movie({ movie, genres }) {
     vote_average: voteAverage,
     genre_ids: genresIDs,
   } = movie
-  const checkedGenres = genresIDs.map((id) => {
-    const foundGenre = genres.find((genre) => genre.id === id)
+  const checkedGenres = genresIDs.map((genreId) => {
+    const foundGenre = genres.find((genre) => genre.id === genreId)
     return foundGenre === undefined ? null : (
       <div key={foundGenre.id} className="movie-сard__genre">
         {foundGenre.name}
@@ -76,7 +77,14 @@ export default function Movie({ movie, genres }) {
           </div>
         </div>
         <div className="movie-сard__overview">{lengthText(overview)}</div>
-        <Rate className="movie-сard__rating" allowHalf disabled count={10} value={voteAverage} />
+        <Rate
+          className="movie-сard__rating"
+          count={10}
+          onChange={(rating) => {
+            onRating(id, rating)
+          }}
+          value={0}
+        />
       </div>
     </li>
   )

@@ -50,7 +50,9 @@ export default class ApiMovieDB {
         'Content-Type': 'application/json;charset=utf-8',
         Authorization: `Bearer ${this.auth}`,
       },
-      body: `${rating}`,
+      body: JSON.stringify({
+        value: rating,
+      }),
     }
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/${movieId}/rating?guest_session_id=${this.guestSessionId}`,
