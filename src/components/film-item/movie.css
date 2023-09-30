@@ -73,7 +73,8 @@
 .movie-сard__rate {
     width: 30px;
     height: 30px;
-    border: 2px solid yellow;
+    border-width: 2px;
+    border-style: solid;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -85,6 +86,19 @@
     text-align: left;
     flex-shrink: 0;
 }
+.movie-сard__rate--red {
+    border-color: #E90000;
+}
+.movie-сard__rate--orange {
+    border-color: #E97E00;
+}
+.movie-сard__rate--yellow {
+    border-color: #E9D100;
+}
+.movie-сard__rate--green {
+    border-color: #66E900;
+}
+
 .movie-сard__date {
     font-family: "Inter UI";
     font-size: 12px;

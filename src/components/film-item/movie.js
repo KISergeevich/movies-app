@@ -3,6 +3,7 @@ import { Rate } from 'antd'
 import { isDate, format } from 'date-fns'
 import PropTypes from 'prop-types'
 import './movie.css'
+import classNames from 'classnames'
 
 function lengthText(str) {
   if (str === '') {
@@ -63,7 +64,16 @@ export default function Movie({ movie, genres }) {
             </div>
             <div className="movie-сard__genres">{checkedGenres}</div>
           </div>
-          <div className="movie-сard__rate">{voteAverage.toFixed(1)}</div>
+          <div
+            className={classNames('movie-сard__rate', {
+              'movie-сard__rate--red': voteAverage < 3 && voteAverage >= 0,
+              'movie-сard__rate--orange': voteAverage >= 3 && voteAverage < 5,
+              'movie-сard__rate--yellow': voteAverage >= 5 && voteAverage < 7,
+              'movie-сard__rate--green': voteAverage >= 7,
+            })}
+          >
+            {voteAverage.toFixed(1)}
+          </div>
         </div>
         <div className="movie-сard__overview">{lengthText(overview)}</div>
         <Rate className="movie-сard__rating" allowHalf disabled count={10} value={voteAverage} />
