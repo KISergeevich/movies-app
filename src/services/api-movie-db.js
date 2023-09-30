@@ -3,7 +3,7 @@ export default class ApiMovieDB {
   auth =
     'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxMTExZjU5Yzg2NGJiZTA0ZTVkMTE2ZjVhNWJmYjFjYiIsInN1YiI6IjY0YWQwNzU5YjY4NmI5MDEyZjg4NjNmNiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.A1OX3DUjFn8jWHt82mVoDiBy4-NohG23I3uQdXr7qYw'
 
-  guestSessionID = undefined
+  guestSessionId = undefined
 
   async createGuestSession() {
     const options = {
@@ -17,8 +17,49 @@ export default class ApiMovieDB {
     const json = await response.json()
     const { success, guest_session_id } = json
     if (success) {
-      this.guestSessionID = guest_session_id
+      this.guestSessionId = guest_session_id
     }
+  }
+
+  async getRatedMovies() {
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: `Bearer ${this.auth}`,
+      },
+    }
+    const response = await fetch(
+      `https://api.themoviedb.org/3/guest_session/${this.guestSessionId}/rated/movies?language=en-US&page=1&sort_by=created_at.asc`,
+      options
+    )
+    const json = await response.json()
+    const { results, total_results } = json
+    return {
+      movies: results,
+      total: total_results,
+      status: results.length !== 0 ? 'success' : 'empty',
+    }
+  }
+
+  async postRating(movieId, rating) {
+    const options = {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+        Authorization: `Bearer ${this.auth}`,
+      },
+      body: `${rating}`,
+    }
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${movieId}/rating?guest_session_id=${this.guestSessionId}`,
+      options
+    )
+    if (response.ok) {
+      return this.getRatedMovies()
+    }
+    return undefined
   }
 
   async getGenres() {
