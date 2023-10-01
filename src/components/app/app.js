@@ -16,17 +16,25 @@ export default class App extends Component {
       search: '',
       status: 'none',
       genres: [],
+      tabStatus: 'search',
+      ratedMovies: [],
+      ratedPage: 1,
+      ratedTotal: 0,
     }
     this.api = new ApiMovieDB()
   }
 
   async componentDidMount() {
     await this.api.createGuestSession()
-    const genres = await this.api.getGenres()
+    await this.getGenres()
+    await this.getRatedMovies()
+  }
+
+  onTabChanged(tabStatus) {
     this.setState((state) => {
       return {
         ...state,
-        genres,
+        tabStatus,
       }
     })
   }
@@ -56,8 +64,32 @@ export default class App extends Component {
     this.fetch(search, page)
   }
 
-  onRating(movieId, rating) {
-    this.api.postRating(movieId, rating)
+  async onRating(movieId, rating) {
+    const rated = await this.api.postRating(movieId, rating)
+    if (rated) {
+      await this.getRatedMovies()
+    }
+  }
+
+  async getGenres() {
+    const genres = await this.api.getGenres()
+    this.setState((state) => {
+      return {
+        ...state,
+        genres,
+      }
+    })
+  }
+
+  async getRatedMovies() {
+    const { movies: ratedMovies, total: ratedTotal } = await this.api.getRatedMovies()
+    this.setState((state) => {
+      return {
+        ...state,
+        ratedMovies,
+        ratedTotal,
+      }
+    })
   }
 
   async fetch(search, page) {
@@ -87,17 +119,20 @@ export default class App extends Component {
   }
 
   render() {
-    const { movies, total, page, status, genres } = this.state
+    const { movies, total, page, status, genres, tabStatus, ratedMovies, ratedTotal, ratedPage } = this.state
     return (
       <GenresProvider value={genres}>
         <div className="movieListView">
-          <Header onSearch={(search) => this.onSearch(search)} />
+          <Header
+            onSearch={(search) => this.onSearch(search)}
+            onTabChanged={(activeKey) => this.onTabChanged(activeKey)}
+          />
           <ListFilm
-            movies={movies}
+            movies={tabStatus === 'search' ? movies : ratedMovies}
             onPage={(p) => this.onPage(p)}
             status={status}
-            total={total}
-            page={page}
+            total={tabStatus === 'search' ? total : ratedTotal}
+            page={tabStatus === 'search' ? page : ratedPage}
             onRating={(movieId, rating) => this.onRating(movieId, rating)}
           />
         </div>

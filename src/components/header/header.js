@@ -23,7 +23,7 @@ export default class Header extends Component {
     {
       key: '2',
       label: 'Rated',
-      children: <div className="header__rated" onChange={(event) => this.searchChanged(event)} />,
+      children: <div className="header__rated" />,
     },
   ]
 
@@ -37,9 +37,16 @@ export default class Header extends Component {
   }
 
   render() {
+    const { onTabChanged } = this.props
     return (
       <header>
-        <Tabs className="header-tabs" defaultActiveKey="1" centered items={this.items} />
+        <Tabs
+          className="header-tabs"
+          onChange={(activeKey) => onTabChanged(activeKey === '1' ? 'search' : 'rated')}
+          defaultActiveKey="1"
+          centered
+          items={this.items}
+        />
       </header>
     )
   }

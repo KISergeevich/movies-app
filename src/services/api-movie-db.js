@@ -60,10 +60,7 @@ export default class ApiMovieDB {
       `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${this.apiKey}&guest_session_id=${this.guestSessionId}`,
       options
     )
-    if (response.ok) {
-      return this.getRatedMovies()
-    }
-    return undefined
+    return response.ok
   }
 
   async getGenres() {
