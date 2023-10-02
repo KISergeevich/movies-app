@@ -25,7 +25,7 @@ export default class ApiMovieDB {
     }
   }
 
-  async getRatedMovies() {
+  async getRatedMovies(page) {
     const options = {
       method: 'GET',
       headers: {
@@ -34,7 +34,7 @@ export default class ApiMovieDB {
       },
     }
     const response = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${this.guestSessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&page=1&sort_by=created_at.asc`,
+      `https://api.themoviedb.org/3/guest_session/${this.guestSessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`,
       options
     )
     const json = await response.json()

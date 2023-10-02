@@ -35,7 +35,7 @@ export default class App extends Component {
   async componentDidMount() {
     await this.api.createGuestSession()
     await this.getGenres()
-    await this.getRatedMovies()
+    await this.getRatedMovies(1)
   }
 
   onTabChanged(tabStatus) {
@@ -61,21 +61,33 @@ export default class App extends Component {
   }
 
   async onPage(page) {
-    await this.setState((state) => {
-      return {
-        ...state,
-        page,
-        status: 'loading',
-      }
-    })
-    const { search } = this.state
-    this.fetch(search, page)
+    const { tabStatus } = this.state
+    if (tabStatus === 'search') {
+      await this.setState((state) => {
+        return {
+          ...state,
+          page,
+          status: 'loading',
+        }
+      })
+      const { search } = this.state
+      this.fetch(search, page)
+    } else {
+      await this.setState((state) => {
+        return {
+          ...state,
+          ratedPage: page,
+        }
+      })
+      await this.getRatedMovies(page)
+    }
   }
 
   async onRating(movieId, rating) {
     const rated = await this.api.postRating(movieId, rating)
+    const { ratedPage } = this.state
     if (rated) {
-      setTimeout(() => this.getRatedMovies(), 1000)
+      setTimeout(() => this.getRatedMovies(ratedPage), 1000)
     }
   }
 
@@ -89,8 +101,8 @@ export default class App extends Component {
     })
   }
 
-  async getRatedMovies() {
-    const { movies: ratedMovies, total: ratedTotal } = await this.api.getRatedMovies()
+  async getRatedMovies(page) {
+    const { movies: ratedMovies, total: ratedTotal } = await this.api.getRatedMovies(page)
     this.setState((state) => {
       return {
         ...state,
