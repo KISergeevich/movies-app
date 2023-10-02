@@ -67,7 +67,7 @@ export default class App extends Component {
   async onRating(movieId, rating) {
     const rated = await this.api.postRating(movieId, rating)
     if (rated) {
-      await this.getRatedMovies()
+      setTimeout(() => this.getRatedMovies(), 0)
     }
   }
 

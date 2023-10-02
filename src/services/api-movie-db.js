@@ -30,6 +30,7 @@ export default class ApiMovieDB {
       method: 'GET',
       headers: {
         accept: 'application/json',
+        'Cache-Control': 'no-cache',
       },
     }
     const response = await fetch(
@@ -60,7 +61,9 @@ export default class ApiMovieDB {
       `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${this.apiKey}&guest_session_id=${this.guestSessionId}`,
       options
     )
-    return response.ok
+    const json = await response.json()
+    const { success } = json
+    return success
   }
 
   async getGenres() {
