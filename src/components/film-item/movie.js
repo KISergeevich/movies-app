@@ -26,6 +26,7 @@ export default function Movie({ movie, genres, onRating }) {
   const {
     id,
     title,
+    rating,
     poster_path: posterPath,
     overview,
     release_date: dateRelease,
@@ -80,10 +81,10 @@ export default function Movie({ movie, genres, onRating }) {
         <Rate
           className="movie-сard__rating"
           count={10}
-          onChange={(rating) => {
-            onRating(id, rating)
+          onChange={(rate) => {
+            onRating(id, rate)
           }}
-          value={0}
+          value={rating}
         />
       </div>
     </li>

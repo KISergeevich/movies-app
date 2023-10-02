@@ -6,6 +6,14 @@ import './app.css'
 import Header from '../header/header'
 import ListFilm from '../films-list/films-list'
 
+function refreshRating(ratedMovies, movies) {
+  return movies.map((obj) => {
+    const { id } = obj
+    const found = ratedMovies.find((ratedObj) => ratedObj.id === id)
+    return found !== undefined ? { ...obj, rating: found.rating } : obj
+  })
+}
+
 export default class App extends Component {
   constructor() {
     super()
@@ -67,7 +75,7 @@ export default class App extends Component {
   async onRating(movieId, rating) {
     const rated = await this.api.postRating(movieId, rating)
     if (rated) {
-      setTimeout(() => this.getRatedMovies(), 0)
+      setTimeout(() => this.getRatedMovies(), 1000)
     }
   }
 
@@ -86,6 +94,7 @@ export default class App extends Component {
     this.setState((state) => {
       return {
         ...state,
+        movies: refreshRating(ratedMovies, state.movies),
         ratedMovies,
         ratedTotal,
       }
@@ -99,7 +108,7 @@ export default class App extends Component {
       this.setState((state) => {
         return {
           ...state,
-          movies,
+          movies: refreshRating(state.ratedMovies, movies),
           total,
           status,
         }
