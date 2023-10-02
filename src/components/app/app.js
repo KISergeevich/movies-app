@@ -6,12 +6,27 @@ import './app.css'
 import Header from '../header/header'
 import ListFilm from '../films-list/films-list'
 
-function refreshRating(ratedMovies, movies) {
-  return movies.map((obj) => {
-    const { id } = obj
-    const found = ratedMovies.find((ratedObj) => ratedObj.id === id)
-    return found !== undefined ? { ...obj, rating: found.rating } : obj
+function refreshRating(ratings, movies) {
+  return movies.map((movie) => {
+    const { id } = movie
+    const found = ratings.find((rating) => rating.id === id)
+    return found !== undefined ? { ...movie, rating: found.rating } : movie
   })
+}
+
+function upsertRating(id, newRating, ratings) {
+  if (ratings.some((rating) => rating.id === id)) {
+    return ratings.map((rating) => {
+      if (rating.id === id) {
+        return {
+          id,
+          rating: newRating,
+        }
+      }
+      return rating
+    })
+  }
+  return [...ratings, { id, rating: newRating }]
 }
 
 export default class App extends Component {
@@ -28,6 +43,7 @@ export default class App extends Component {
       ratedMovies: [],
       ratedPage: 1,
       ratedTotal: 0,
+      ratings: [],
     }
     this.api = new ApiMovieDB()
   }
@@ -87,6 +103,12 @@ export default class App extends Component {
     const rated = await this.api.postRating(movieId, rating)
     const { ratedPage } = this.state
     if (rated) {
+      await this.setState((state) => {
+        return {
+          ...state,
+          ratings: upsertRating(movieId, rating, state.ratings),
+        }
+      })
       setTimeout(() => this.getRatedMovies(ratedPage), 1000)
     }
   }
@@ -106,7 +128,7 @@ export default class App extends Component {
     this.setState((state) => {
       return {
         ...state,
-        movies: refreshRating(ratedMovies, state.movies),
+        movies: refreshRating(state.ratings, state.movies),
         ratedMovies,
         ratedTotal,
       }
@@ -120,7 +142,7 @@ export default class App extends Component {
       this.setState((state) => {
         return {
           ...state,
-          movies: refreshRating(state.ratedMovies, movies),
+          movies: refreshRating(state.ratings, movies),
           total,
           status,
         }

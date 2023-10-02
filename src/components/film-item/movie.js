@@ -82,7 +82,9 @@ export default function Movie({ movie, genres, onRating }) {
           className="movie-сard__rating"
           count={10}
           onChange={(rate) => {
-            onRating(id, rate)
+            if (rate !== 0) {
+              onRating(id, rate)
+            }
           }}
           value={rating}
         />
