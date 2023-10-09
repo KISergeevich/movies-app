@@ -33,13 +33,19 @@ export default class App extends Component {
     await this.getRatedMovies(1)
   }
 
-  onTabChanged(tabStatus) {
+  async onTabChanged(tab) {
     this.setState((state) => {
       return {
         ...state,
-        tabStatus,
+        tabStatus: tab,
       }
     })
+    const { search, page, ratedPage } = this.state
+    if (tab === 'search') {
+      this.search(search, page)
+    } else {
+      await this.getRatedMovies(ratedPage)
+    }
   }
 
   async onSearch(search) {
@@ -52,7 +58,7 @@ export default class App extends Component {
       }
     })
     const { page } = this.state
-    this.fetch(search, page)
+    this.search(search, page)
   }
 
   async onPage(page) {
@@ -66,7 +72,7 @@ export default class App extends Component {
         }
       })
       const { search } = this.state
-      this.fetch(search, page)
+      this.search(search, page)
     } else {
       await this.setState((state) => {
         return {
@@ -115,7 +121,7 @@ export default class App extends Component {
     })
   }
 
-  async fetch(search, page) {
+  async search(search, page) {
     if (search !== '') {
       const response = await this.api.search(search, page)
       const { movies, total, status } = response
@@ -146,10 +152,7 @@ export default class App extends Component {
     return (
       <GenresProvider value={genres}>
         <div className="movieListView">
-          <Header
-            onSearch={(search) => this.onSearch(search)}
-            onTabChanged={(activeKey) => this.onTabChanged(activeKey)}
-          />
+          <Header onSearch={(search) => this.onSearch(search)} onTabChanged={(tab) => this.onTabChanged(tab)} />
           <ListFilm
             movies={tabStatus === 'search' ? movies : ratedMovies}
             onPage={(p) => this.onPage(p)}
