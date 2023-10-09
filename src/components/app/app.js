@@ -5,29 +5,8 @@ import ApiMovieDB from '../../services/api-movie-db'
 import './app.css'
 import Header from '../header/header'
 import ListFilm from '../films-list/films-list'
-
-function refreshRating(ratings, movies) {
-  return movies.map((movie) => {
-    const { id } = movie
-    const found = ratings.find((rating) => rating.id === id)
-    return found !== undefined ? { ...movie, rating: found.rating } : movie
-  })
-}
-
-function upsertRating(id, newRating, ratings) {
-  if (ratings.some((rating) => rating.id === id)) {
-    return ratings.map((rating) => {
-      if (rating.id === id) {
-        return {
-          id,
-          rating: newRating,
-        }
-      }
-      return rating
-    })
-  }
-  return [...ratings, { id, rating: newRating }]
-}
+import refreshRating from '../../utils/refresh-rating'
+import upsertRating from '../../utils/upsert-rating'
 
 export default class App extends Component {
   constructor() {
@@ -128,6 +107,7 @@ export default class App extends Component {
     this.setState((state) => {
       return {
         ...state,
+        status: 'success',
         movies: refreshRating(state.ratings, state.movies),
         ratedMovies,
         ratedTotal,
