@@ -8,29 +8,31 @@ import './movie-list.css'
 import Movie from '../film-item/movie'
 
 export default function MovieList({ model, onPage, onRating }) {
-  const elementMovies = model.items.map((movie) => {
-    return (
-      <GenresConsumer key={movie.id}>
+  const list = (
+    <ul className="movie-list">
+      <GenresConsumer>
         {(genres) => {
-          return (
-            <Movie
-              movie={movie}
-              key={movie.id}
-              genres={genres}
-              onRating={(movieId, rating) => onRating(movieId, rating)}
-            />
-          )
+          return model.items.map((movie) => {
+            return (
+              <Movie
+                movie={movie}
+                key={movie.id}
+                genres={genres}
+                onRating={(movieId, rating) => onRating(movieId, rating)}
+              />
+            )
+          })
         }}
       </GenresConsumer>
-    )
-  })
+    </ul>
+  )
   switch (model.status) {
     case 'loading':
       return <Spin className="spin" size="large" />
     case 'success':
       return (
         <div>
-          <ul className="movie-list">{elementMovies}</ul>
+          {list}
           <Pagination
             className="pagination"
             defaultCurrent={1}
