@@ -4,11 +4,11 @@ import React from 'react'
 import { Spin, Alert, Pagination } from 'antd'
 
 import { GenresConsumer } from '../../services/genres-context'
-import './films-list.css'
+import './movie-list.css'
 import Movie from '../film-item/movie'
 
-export default function MovieList({ movies, status, page, total, onPage, onRating }) {
-  const elementMovies = movies.map((movie) => {
+export default function MovieList({ model, onPage, onRating }) {
+  const elementMovies = model.items.map((movie) => {
     return (
       <GenresConsumer key={movie.id}>
         {(genres) => {
@@ -24,7 +24,7 @@ export default function MovieList({ movies, status, page, total, onPage, onRatin
       </GenresConsumer>
     )
   })
-  switch (status) {
+  switch (model.status) {
     case 'loading':
       return <Spin className="spin" size="large" />
     case 'success':
@@ -34,11 +34,11 @@ export default function MovieList({ movies, status, page, total, onPage, onRatin
           <Pagination
             className="pagination"
             defaultCurrent={1}
-            total={total}
+            total={model.total}
             onChange={(p) => onPage(p)}
             hideOnSinglePage
             pageSize={20}
-            current={page}
+            current={model.page}
             showSizeChanger={false}
           />
         </div>
@@ -55,25 +55,24 @@ export default function MovieList({ movies, status, page, total, onPage, onRatin
 }
 
 MovieList.propTypes = {
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      poster_path: PropTypes.string,
-      overview: PropTypes.string,
-      release_date: PropTypes.string,
-      vote_average: PropTypes.number,
-    })
-  ),
-  status: PropTypes.string,
-  page: PropTypes.number,
-  total: PropTypes.number,
+  model: PropTypes.shape({
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        title: PropTypes.string,
+        poster_path: PropTypes.string,
+        overview: PropTypes.string,
+        release_date: PropTypes.string,
+        vote_average: PropTypes.number,
+      })
+    ),
+    status: PropTypes.string,
+    page: PropTypes.number,
+    total: PropTypes.number,
+  }),
   onPage: PropTypes.func,
 }
 
 MovieList.defaultProps = {
-  movies: [],
-  status: 'none',
-  page: 1,
-  total: 0,
+  model: {},
   onPage: () => {},
 }

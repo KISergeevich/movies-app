@@ -4,7 +4,7 @@ import { GenresProvider } from '../../services/genres-context'
 import ApiMovieDB from '../../services/api-movie-db'
 import './app.css'
 import Header from '../header/header'
-import ListFilm from '../films-list/films-list'
+import ListFilm from '../films-list/movie-list'
 import refreshRating from '../../utils/refresh-rating'
 import upsertRating from '../../utils/upsert-rating'
 
@@ -12,17 +12,22 @@ export default class App extends Component {
   constructor() {
     super()
     this.state = {
-      page: 1,
-      movies: [],
-      total: 0,
-      search: '',
-      status: 'none',
+      search: {
+        status: 'none',
+        search: '',
+        page: 1,
+        total: 0,
+        items: [],
+      },
+      rated: {
+        status: 'none',
+        page: 1,
+        items: [],
+        total: 0,
+      },
+      ratings: [],
       genres: [],
       tabStatus: 'search',
-      ratedMovies: [],
-      ratedPage: 1,
-      ratedTotal: 0,
-      ratings: [],
     }
     this.api = new ApiMovieDB()
   }
@@ -40,25 +45,28 @@ export default class App extends Component {
         tabStatus: tab,
       }
     })
-    const { search, page, ratedPage } = this.state
+    const { search, rated } = this.state
     if (tab === 'search') {
-      this.search(search, page)
+      this.search(search.search, search.page)
     } else {
-      await this.getRatedMovies(ratedPage)
+      await this.getRatedMovies(rated.page)
     }
   }
 
-  async onSearch(search) {
+  async onSearch(searchText) {
     await this.setState((state) => {
       return {
         ...state,
-        search,
-        page: 1,
-        status: 'loading',
+        search: {
+          ...state.search,
+          search: searchText,
+          page: 1,
+          status: 'loading',
+        },
       }
     })
-    const { page } = this.state
-    this.search(search, page)
+    const { search } = this.state
+    this.search(searchText, search.page)
   }
 
   async onPage(page) {
@@ -67,17 +75,24 @@ export default class App extends Component {
       await this.setState((state) => {
         return {
           ...state,
-          page,
-          status: 'loading',
+          search: {
+            ...state.search,
+            page,
+            status: 'loading',
+          },
         }
       })
       const { search } = this.state
-      this.search(search, page)
+      this.search(search.search, page)
     } else {
       await this.setState((state) => {
         return {
           ...state,
-          ratedPage: page,
+          rated: {
+            ...state.rated,
+            page,
+            status: 'loading',
+          },
         }
       })
       await this.getRatedMovies(page)
@@ -85,16 +100,16 @@ export default class App extends Component {
   }
 
   async onRating(movieId, rating) {
-    const rated = await this.api.postRating(movieId, rating)
-    const { ratedPage } = this.state
-    if (rated) {
+    const result = await this.api.postRating(movieId, rating)
+    const { rated } = this.state
+    if (result) {
       await this.setState((state) => {
         return {
           ...state,
           ratings: upsertRating(movieId, rating, state.ratings),
         }
       })
-      setTimeout(() => this.getRatedMovies(ratedPage), 1000)
+      setTimeout(() => this.getRatedMovies(rated.page), 1000)
     }
   }
 
@@ -113,10 +128,16 @@ export default class App extends Component {
     this.setState((state) => {
       return {
         ...state,
-        status: 'success',
-        movies: refreshRating(state.ratings, state.movies),
-        ratedMovies,
-        ratedTotal,
+        rated: {
+          ...state.rated,
+          status: 'success',
+          items: ratedMovies,
+          total: ratedTotal,
+        },
+        search: {
+          ...state.search,
+          items: refreshRating(state.ratings, state.search.items),
+        },
       }
     })
   }
@@ -128,37 +149,40 @@ export default class App extends Component {
       this.setState((state) => {
         return {
           ...state,
-          movies: refreshRating(state.ratings, movies),
-          total,
-          status,
+          search: {
+            ...state.search,
+            items: refreshRating(state.ratings, movies),
+            total,
+            status,
+          },
         }
       })
     } else {
       this.setState((state) => {
         return {
           ...state,
-          total: 0,
-          movies: [],
-          search,
-          page: 1,
-          status: 'none',
+          search: {
+            ...state.search,
+            total: 0,
+            items: [],
+            search,
+            page: 1,
+            status: 'none',
+          },
         }
       })
     }
   }
 
   render() {
-    const { movies, total, page, status, genres, tabStatus, ratedMovies, ratedTotal, ratedPage } = this.state
+    const { search, genres, tabStatus, rated } = this.state
     return (
       <GenresProvider value={genres}>
         <div className="movieListView">
-          <Header onSearch={(search) => this.onSearch(search)} onTabChanged={(tab) => this.onTabChanged(tab)} />
+          <Header onSearch={(searchText) => this.onSearch(searchText)} onTabChanged={(tab) => this.onTabChanged(tab)} />
           <ListFilm
-            movies={tabStatus === 'search' ? movies : ratedMovies}
+            model={tabStatus === 'search' ? search : rated}
             onPage={(p) => this.onPage(p)}
-            status={status}
-            total={tabStatus === 'search' ? total : ratedTotal}
-            page={tabStatus === 'search' ? page : ratedPage}
             onRating={(movieId, rating) => this.onRating(movieId, rating)}
           />
         </div>
