@@ -8,20 +8,26 @@ export default class ApiMovieDB {
   guestSessionId = undefined
 
   async createGuestSession() {
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-      },
-    }
-    const response = await fetch(
-      `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this.apiKey}`,
-      options
-    )
-    const json = await response.json()
-    const { success, guest_session_id } = json
-    if (success) {
-      this.guestSessionId = guest_session_id
+    const localStorageGuestSessionId = localStorage.getItem('guestSessionId')
+    if (localStorageGuestSessionId === undefined || localStorageGuestSessionId === null) {
+      const options = {
+        method: 'GET',
+        headers: {
+          accept: 'application/json',
+        },
+      }
+      const response = await fetch(
+        `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this.apiKey}`,
+        options
+      )
+      const json = await response.json()
+      const { success, guest_session_id } = json
+      if (success) {
+        this.guestSessionId = guest_session_id
+        localStorage.setItem('guestSessionId', this.guestSessionId)
+      }
+    } else {
+      this.guestSessionId = localStorageGuestSessionId
     }
   }
 
