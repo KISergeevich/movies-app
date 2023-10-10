@@ -31,7 +31,7 @@ export default function MovieList({ model, onPage, onRating }) {
       return <Spin className="spin" size="large" />
     case 'success':
       return (
-        <div>
+        <div className="movie-box">
           {list}
           <Pagination
             className="pagination"
