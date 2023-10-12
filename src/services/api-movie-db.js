@@ -63,10 +63,11 @@ export default class ApiMovieDB {
       }
     }
     const json = await response.json()
-    const { results, total_results } = json
+    const { results, total_results, total_pages } = json
     return {
       movies: results,
       total: total_results,
+      totalPages: total_pages,
       status: results.length !== 0 ? 'success' : 'empty',
     }
   }

@@ -39,7 +39,7 @@ export default class App extends Component {
   async componentDidMount() {
     await this.api.createGuestSession()
     await this.getGenres()
-    await this.getRatedMovies(1)
+    await this.fillRatings()
   }
 
   async onTabChanged(tab) {
@@ -153,6 +153,30 @@ export default class App extends Component {
         ...state.search,
         items: refreshRating(state.ratings, state.search.items),
       },
+    }))
+  }
+
+  async fillRatings() {
+    let ratings = []
+    let page = 1
+    let pages = 0
+    do {
+      // eslint-disable-next-line no-await-in-loop
+      const { movies, status, totalPages } = await this.api.getRatedMovies(page)
+      if (status === 'success') {
+        pages = totalPages
+        page += 1
+        // eslint-disable-next-line no-loop-func
+        movies.forEach((movie) => {
+          const { id, rating } = movie
+          ratings = upsertRating(id, rating, ratings)
+        })
+      }
+    } while (page <= pages)
+
+    this.setState((state) => ({
+      ...state,
+      ratings,
     }))
   }
 
