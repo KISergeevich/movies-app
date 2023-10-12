@@ -1,5 +1,5 @@
 import React from 'react'
-import { Rate } from 'antd'
+import { Rate, Alert } from 'antd'
 import { isDate, format } from 'date-fns'
 import PropTypes from 'prop-types'
 import './movie.css'
@@ -35,14 +35,19 @@ export default function Movie({ movie, genres, onRating }) {
     vote_average: voteAverage,
     genre_ids: genresIDs,
   } = movie
-  const checkedGenres = genresIDs.map((genreId) => {
-    const foundGenre = genres.find((genre) => genre.id === genreId)
-    return foundGenre === undefined ? null : (
-      <div key={foundGenre.id} className="movie-сard__genre">
-        {foundGenre.name}
-      </div>
-    )
-  })
+  let checkedGenres
+  if (genres.status !== 'none' && genres.status !== 'success') {
+    checkedGenres = <Alert message="Genres failed" type="error" />
+  } else {
+    checkedGenres = genresIDs.map((genreId) => {
+      const foundGenre = genres.genres.find((genre) => genre.id === genreId)
+      return foundGenre === undefined ? null : (
+        <div key={foundGenre.id} className="movie-сard__genre">
+          {foundGenre.name}
+        </div>
+      )
+    })
+  }
   return (
     <li className="movie-container">
       <img

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { message } from 'antd'
 
 import { GenresProvider } from '../../services/genres-context'
 import ApiMovieDB from '../../services/api-movie-db'
@@ -26,7 +27,10 @@ export default class App extends Component {
         total: 0,
       },
       ratings: [],
-      genres: [],
+      genres: {
+        status: 'none',
+        genres: [],
+      },
       tabStatus: 'search',
     }
     this.api = new ApiMovieDB()
@@ -102,7 +106,9 @@ export default class App extends Component {
   async onRating(movieId, rating) {
     const result = await this.api.postRating(movieId, rating)
     const { rated } = this.state
+
     if (result) {
+      message.success('Rating success')
       await this.setState((state) => {
         return {
           ...state,
@@ -110,36 +116,44 @@ export default class App extends Component {
         }
       })
       setTimeout(() => this.getRatedMovies(rated.page), 1000)
+    } else {
+      message.error('Raiting failed')
     }
   }
 
   async getGenres() {
     const genres = await this.api.getGenres()
-    this.setState((state) => {
-      return {
-        ...state,
-        genres,
-      }
-    })
+    this.setState((state) => ({
+      ...state,
+      genres: {
+        ...state.genres,
+        ...genres,
+      },
+    }))
   }
 
   async getRatedMovies(page) {
-    const { movies: ratedMovies, total: ratedTotal } = await this.api.getRatedMovies(page)
-    this.setState((state) => {
-      return {
-        ...state,
-        rated: {
-          ...state.rated,
-          status: 'success',
-          items: ratedMovies,
-          total: ratedTotal,
-        },
-        search: {
-          ...state.search,
-          items: refreshRating(state.ratings, state.search.items),
-        },
-      }
-    })
+    this.setState((state) => ({
+      ...state,
+      rated: {
+        ...state.rated,
+        status: 'loading',
+      },
+    }))
+    const { movies: ratedMovies, total: ratedTotal, status } = await this.api.getRatedMovies(page)
+    this.setState((state) => ({
+      ...state,
+      rated: {
+        ...state.rated,
+        status,
+        items: ratedMovies,
+        total: ratedTotal,
+      },
+      search: {
+        ...state.search,
+        items: refreshRating(state.ratings, state.search.items),
+      },
+    }))
   }
 
   async search(search, page) {

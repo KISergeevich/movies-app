@@ -40,12 +40,28 @@ export default class ApiMovieDB {
         'Cache-Control': 'no-cache',
       },
     }
-    const getRatedMoviesUrl = new URL(`guest_session/${this.guestSessionId}/rated/movies`, this.baseUrl)
-    getRatedMoviesUrl.searchParams.set('api_key', this.apiKey)
-    getRatedMoviesUrl.searchParams.set('language', 'en-US')
-    getRatedMoviesUrl.searchParams.set('page', page)
-    getRatedMoviesUrl.searchParams.set('sort_by', 'created_at.asc')
-    const response = await fetch(getRatedMoviesUrl, options)
+    let response
+    try {
+      const getRatedMoviesUrl = new URL(`guest_session/${this.guestSessionId}/rated/movies`, this.baseUrl)
+      getRatedMoviesUrl.searchParams.set('api_key', this.apiKey)
+      getRatedMoviesUrl.searchParams.set('language', 'en-US')
+      getRatedMoviesUrl.searchParams.set('page', page)
+      getRatedMoviesUrl.searchParams.set('sort_by', 'created_at.asc')
+      response = await fetch(getRatedMoviesUrl, options)
+    } catch {
+      return {
+        movies: [],
+        total: 0,
+        status: 'noInternet',
+      }
+    }
+    if (!response.ok) {
+      return {
+        movies: [],
+        total: 0,
+        status: 'failed',
+      }
+    }
     const json = await response.json()
     const { results, total_results } = json
     return {
@@ -66,10 +82,18 @@ export default class ApiMovieDB {
         value: rating,
       }),
     }
-    const postRatingUrl = new URL(`movie/${movieId}/rating`, this.baseUrl)
-    postRatingUrl.searchParams.set('api_key', this.apiKey)
-    postRatingUrl.searchParams.set('guest_session_id', this.guestSessionId)
-    const response = await fetch(postRatingUrl, options)
+    let response
+    try {
+      const postRatingUrl = new URL(`movie/${movieId}/rating`, this.baseUrl)
+      postRatingUrl.searchParams.set('api_key', this.apiKey)
+      postRatingUrl.searchParams.set('guest_session_id', this.guestSessionId)
+      response = await fetch(postRatingUrl, options)
+    } catch {
+      return false
+    }
+    if (!response.ok) {
+      return false
+    }
     const json = await response.json()
     const { success } = json
     return success
@@ -82,13 +106,30 @@ export default class ApiMovieDB {
         accept: 'application/json',
       },
     }
-    const getGenresUrl = new URL('genre/movie/list', this.baseUrl)
-    getGenresUrl.searchParams.set('api_key', this.apiKey)
-    getGenresUrl.searchParams.set('language', 'en')
-    const response = await fetch(getGenresUrl, options)
+    let response
+    try {
+      const getGenresUrl = new URL('genre/movie/list', this.baseUrl)
+      getGenresUrl.searchParams.set('api_key', this.apiKey)
+      getGenresUrl.searchParams.set('language', 'en')
+      response = await fetch(getGenresUrl, options)
+    } catch {
+      return {
+        status: 'noInternet',
+        genres: [],
+      }
+    }
+    if (!response.ok) {
+      return {
+        status: 'failed',
+        genres: [],
+      }
+    }
     const json = await response.json()
     const { genres } = json
-    return genres
+    return {
+      status: 'success',
+      genres,
+    }
   }
 
   async search(search, page) {
