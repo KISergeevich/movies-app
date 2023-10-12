@@ -142,7 +142,5 @@
 }
 .movie-сard__rating {
     align-self: flex-end;
-}
-.ant-rate {
     font-size: 14px;
 }
