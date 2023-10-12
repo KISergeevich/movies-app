@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import './movie.css'
 import classNames from 'classnames'
 
+import zagluska from '../../assets/img/zagluska.png'
+
 function lengthText(str) {
   if (str === '') {
     return 'There is no overview about this film'
@@ -45,7 +47,7 @@ export default function Movie({ movie, genres, onRating }) {
     <li className="movie-container">
       <img
         className="movie-сard__img--desktop"
-        src={posterPath == null ? '/assets/img/zagluska.png' : `https://image.tmdb.org/t/p/w500${posterPath}`}
+        src={posterPath == null ? zagluska : `https://image.tmdb.org/t/p/w500${posterPath}`}
         alt="альтернативный текст"
         border="0"
       />
@@ -53,7 +55,7 @@ export default function Movie({ movie, genres, onRating }) {
         <div className="movie-сard__header">
           <img
             className="movie-сard__img--mobile"
-            src={posterPath == null ? '/assets/img/zagluska.png' : `https://image.tmdb.org/t/p/w500${posterPath}`}
+            src={posterPath == null ? zagluska : `https://image.tmdb.org/t/p/w500${posterPath}`}
             alt="альтернативный текст"
             border="0"
           />

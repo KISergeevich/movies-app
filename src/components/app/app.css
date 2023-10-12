@@ -2,7 +2,7 @@
     font-family: "Inter UI";
     font-style: normal;
     font-weight: 400;
-    src: url("/public/assets/fonts/Inter-Regular.ttf");
+    src: url("../../assets/fonts/Inter-Regular.ttf");
 }
 
 body {
