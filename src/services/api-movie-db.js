@@ -7,6 +7,8 @@ export default class ApiMovieDB {
 
   guestSessionId = undefined
 
+  baseUrl = 'https://api.themoviedb.org/3/'
+
   async createGuestSession() {
     const localStorageGuestSessionId = localStorage.getItem('guestSessionId')
     if (localStorageGuestSessionId === undefined || localStorageGuestSessionId === null) {
@@ -16,10 +18,9 @@ export default class ApiMovieDB {
           accept: 'application/json',
         },
       }
-      const response = await fetch(
-        `https://api.themoviedb.org/3/authentication/guest_session/new?api_key=${this.apiKey}`,
-        options
-      )
+      const newSessionUrl = new URL('authentication/guest_session/new', this.baseUrl)
+      newSessionUrl.searchParams.set('api_key', this.apiKey)
+      const response = await fetch(newSessionUrl, options)
       const json = await response.json()
       const { success, guest_session_id } = json
       if (success) {
@@ -39,10 +40,12 @@ export default class ApiMovieDB {
         'Cache-Control': 'no-cache',
       },
     }
-    const response = await fetch(
-      `https://api.themoviedb.org/3/guest_session/${this.guestSessionId}/rated/movies?api_key=${this.apiKey}&language=en-US&page=${page}&sort_by=created_at.asc`,
-      options
-    )
+    const getRatedMoviesUrl = new URL(`guest_session/${this.guestSessionId}/rated/movies`, this.baseUrl)
+    getRatedMoviesUrl.searchParams.set('api_key', this.apiKey)
+    getRatedMoviesUrl.searchParams.set('language', 'en-US')
+    getRatedMoviesUrl.searchParams.set('page', page)
+    getRatedMoviesUrl.searchParams.set('sort_by', 'created_at.asc')
+    const response = await fetch(getRatedMoviesUrl, options)
     const json = await response.json()
     const { results, total_results } = json
     return {
@@ -63,10 +66,10 @@ export default class ApiMovieDB {
         value: rating,
       }),
     }
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}/rating?api_key=${this.apiKey}&guest_session_id=${this.guestSessionId}`,
-      options
-    )
+    const postRatingUrl = new URL(`movie/${movieId}/rating`, this.baseUrl)
+    postRatingUrl.searchParams.set('api_key', this.apiKey)
+    postRatingUrl.searchParams.set('guest_session_id', this.guestSessionId)
+    const response = await fetch(postRatingUrl, options)
     const json = await response.json()
     const { success } = json
     return success
@@ -79,10 +82,10 @@ export default class ApiMovieDB {
         accept: 'application/json',
       },
     }
-    const response = await fetch(
-      `https://api.themoviedb.org/3/genre/movie/list?api_key=${this.apiKey}&language=en`,
-      options
-    )
+    const getGenresUrl = new URL('genre/movie/list', this.baseUrl)
+    getGenresUrl.searchParams.set('api_key', this.apiKey)
+    getGenresUrl.searchParams.set('language', 'en')
+    const response = await fetch(getGenresUrl, options)
     const json = await response.json()
     const { genres } = json
     return genres
@@ -97,10 +100,13 @@ export default class ApiMovieDB {
     }
     let response
     try {
-      response = await fetch(
-        `https://api.themoviedb.org/3/search/movie?api_key=${this.apiKey}&query=${search}&include_adult=false&language=en-US&page=${page}`,
-        options
-      )
+      const searchUrl = new URL('search/movie', this.baseUrl)
+      searchUrl.searchParams.set('api_key', this.apiKey)
+      searchUrl.searchParams.set('query', search)
+      searchUrl.searchParams.set('include_adult', false)
+      searchUrl.searchParams.set('language', 'en-US')
+      searchUrl.searchParams.set('page', page)
+      response = await fetch(searchUrl, options)
     } catch {
       return {
         movies: [],
