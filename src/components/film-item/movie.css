@@ -143,6 +143,6 @@
 .movie-сard__rating {
     align-self: flex-end;
 }
-:where(.css-dev-only-do-not-override-byeoj0).ant-rate {
+.ant-rate {
     font-size: 14px;
 }
